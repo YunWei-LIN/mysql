@@ -1,0 +1,68 @@
+#!/bin/bash
+ansible 常用模块
+* ping
+* yum
+* template
+* copy
+* user
+* group
+* service
+* raw
+* command
+* shell
+* script
+
+#shell模块调用的/bin/sh指令执行
+#command模块不是调用的shell的指令，所以没有bash的环境变量
+#raw很多地方和shell类似，更多地方建议使用shell和conmmand模块,
+#但是如果是使用老版本python，需要用到raw，又后者是客户端是路由器，
+#因为没有安装python模块，那就需要使用raw模块了
+
+#ping模块
+常用于检查指定节点机器是否连通，用法简单，不涉及参数，主机如果在线，则回复pong
+#command模块
+用于在远程主机上执行命令，不能使用管道符和重定向功能
+ansible默认就是使用command模块
+#raw模块
+用于在远程主机上执行命令，支持管道符与重定向
+#shell模块
+shell模块用于在受控机上执行受控机上的脚本
+也可直接在受控机上执行命令,支持管道和重定向
+#scrip模块
+在受控机上执行主控上的脚本
+#template模块
+制作模板同步文件
+ansible abc -m template -a 'src=/root/bbb.sh dest=/root/aaa.sh'
+#yum模块(支持)
+远程安装管理软件
+absent 缺省删除
+installed 安装
+latest  最小的
+present 目前的
+removed 卸载
+默认为present  state状态
+ansible abc -m yum -a 'name=php /state=removed'
+ansible abc -m shell -a 'rpm -qa|grep php'
+#copy模块
+copy用于复制文件到远程主机
+ansible abc -m copy -a 'src=ab.sh dest=root/'
+支持复制时改名
+#group模块(支持状态)
+ansible abc -m group -a 'name=ppd gid=5566 '
+ ansible abc -m group -a 'name=mysql state=absent'
+ #user模块(支持状态)可以修改增加用户,自定义用户信息
+ ansible abc -m user -a 'name=ppd shell=/sbin/nologin'
+ ansible abc -m user -a 'name=ppd shell=/sbin/nologin state=absent'
+#service模块用于管理受控机上的服务
+启动服务 ansible abc -m service -a 'name=vsftpd state=started'
+开启自启 ansible abc -m service -a 'name=vsftpd enabled=yes'
+关闭服务 ansible abc -m service -a 'name=vsftpd state=stopped'
+查看服务开启 ansible abc -m shell -a 'systemctl is-active vsftpd'
+查看服务开启自启 ansible abc -m shell -a 'systemctl is-enabled vsftpd'
+
+开启 started
+关闭 stopped
+重启 restarted
+查看服务开启自启 is-enabled
+查看服务开启 is-active
+

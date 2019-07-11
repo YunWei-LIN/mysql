@@ -1,0 +1,3 @@
+添加库 create database 库名;
+添加表 create table 库名+表名 ( name char(20) , id int );
+修改用户密码 alter user 'root'@'localhost' identified by 'youpassword';
